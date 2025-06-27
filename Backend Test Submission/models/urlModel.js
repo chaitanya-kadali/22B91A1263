@@ -1,11 +1,19 @@
-const mongoose = require("mongoose")
+import mongoose from 'mongoose';
 
-const urlSchema = new mongoose.Schema({
-  shortCode : { type: String, required: true, unique: true },  // -> cleint
-  longUrl: { type: String, required: true },  // url -> client.req
-  validity : Number, // -> cleint
-  createdTime: { type: Date, default: Date.now },  // -> server
-  clicks: { type: Number, default: 0 }  // -> incremented when called
+const clickSchema = new mongoose.Schema({
+  timestamp: { type: Date, default: Date.now },
+  referrer: String,
+  location: String
 });
 
-export default mongoose.model("Url", urlSchema);
+const urlSchema = new mongoose.Schema({
+  originalUrl: { type: String, required: true },
+  shortcode: { type: String, unique: true, required: true },
+  createdAt: { type: Date, default: Date.now },
+  expiry: { type: Date, required: true },
+  clicks: [clickSchema]
+});
+
+const model= mongoose.model('Url', urlSchema);
+
+export default model;
